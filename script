@@ -1,0 +1,24 @@
+function gmailAutoarchive() {
+  var delayDays = 7; // will only impact emails more than 7d old
+  
+  var maxDate = new Date();
+  maxDate.setDate(maxDate.getDate()-delayDays); // what was the date at that time?
+
+  var label = GmailApp.getUserLabelByName("Auto Archived");
+  
+  // Get all the threads labelled 'Auto Archive'
+  //  var threads = label.getThreads(0, 400);
+  
+  // Get all the Inbox emails
+  var threads = GmailApp.getInboxThreads();
+  
+  // we archive all the threads if they're unread AND older than the limit we set in delayDays
+  for (var i = 0; i < threads.length; i++) {
+    if (threads[i].getLastMessageDate()<maxDate) {
+      if (!threads[i].isUnread()) {
+        threads[i].moveToArchive();
+        threads[i].addLabel(label);
+      }
+    }
+  }
+}
